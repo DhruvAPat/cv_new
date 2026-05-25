@@ -54,7 +54,8 @@ PINCODE_TALUKA = {
     # Dindori
     **{p: "Dindori"        for p in ["422202","422209","422215","421302"]},
     # Trimbakeshwar
-    **{p: "Trimbakeshwar"  for p in ["422212","422203"]},
+    **{p: "Trimbakeshwar"  for p in ["422212"]},
+    "422203": "Nashik",          # Panchavati / Aurangabad Rd — Nashik city
     # Niphad
     **{p: "Niphad"         for p in ["422206","422207","422210","422221",
                                       "422301","422303","422305","422306","422308"]},
@@ -555,9 +556,13 @@ with t3:
                 "Ashok Leyland":"#fef3c7","SML Mahindra":"#f1f5f9"}
         return f"background-color:{cmap.get(val,'#f9fafb')}"
 
+    # pandas >= 2.1 renamed applymap → map; support both
+    try:
+        styled = tbl.style.map(hl, subset=["Market Leader"])
+    except AttributeError:
+        styled = tbl.style.applymap(hl, subset=["Market Leader"])
     st.dataframe(
-        tbl.style.applymap(hl, subset=["Market Leader"])
-               .format({"Leader Share %":"{:.1f}%"}),
+        styled.format({"Leader Share %":"{:.1f}%"}),
         use_container_width=True, hide_index=True, height=420
     )
 
